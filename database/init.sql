@@ -1,4 +1,6 @@
 -- Dados inteiramente fictícios. Usar apenas em laboratório local.
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -15,9 +17,9 @@ CREATE TABLE tickets (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 INSERT INTO users(name,email,password,role) VALUES
-('Ana Silva','ana@example.test','ana123','requester'),
-('Bruno Costa','bruno@example.test','bruno123','requester'),
-('Carla Suporte','carla@example.test','suporte123','support');
+('Ana Silva','ana@example.test',crypt('ana123', gen_salt('bf')),'requester'),
+('Bruno Costa','bruno@example.test',crypt('bruno123', gen_salt('bf')),'requester'),
+('Carla Suporte','carla@example.test',crypt('suporte123', gen_salt('bf')),'support');
 INSERT INTO tickets(title, description, status, requester_id) VALUES
 ('Computador não liga','Desktop da sala 3 não inicia.','open',1),
 ('Problema no Wi-Fi','Notebook perde a conexão com a rede.','in_progress',2),

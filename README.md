@@ -37,6 +37,12 @@ Projeto educacional de **API REST simples**, desenvolvido em **Node.js + Express
 
 A primeira inicialização do container executa `database/init.sql` e cadastra os dados fictícios.
 
+Se o volume PostgreSQL já existia antes das correções de segurança, aplique a migração uma vez:
+
+```powershell
+Get-Content -Raw database/migrate_security.sql | docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U lab_user -d helpdesk_lab
+```
+
 **Portas:** API `3001`, PostgreSQL `5433` (no host). Foram escolhidas para evitar conflito com a API de E-commerce do laboratório (`3000` e `5432`).
 
 ## Endpoints disponíveis
@@ -57,6 +63,8 @@ Corpo JSON de exemplo para o login (somente credenciais fictícias):
 ```
 
 Usuários fictícios de teste: `ana@example.test`, `bruno@example.test`, `carla@example.test`. As respectivas senhas constam do `database/init.sql` para fins de laboratório.
+
+As rotas de chamados exigem autenticação. Faça login com `POST /api/users/login` e envie o token retornado no cabeçalho `Authorization: Bearer <token>` nas chamadas a `/api/tickets`. Cada usuário requester vê apenas os próprios chamados; o perfil support pode consultar todos. Os tokens expiram em uma hora. Para manter tokens válidos após reiniciar a API, defina `AUTH_TOKEN_SECRET` no `.env`; se omitido, a API gera um segredo aleatório ao iniciar.
 
 ## Atividade dos grupos
 
